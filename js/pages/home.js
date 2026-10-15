@@ -4,7 +4,7 @@ import { navigate } from '../router.js';
 import { setNavVisible, homeTopHeader, wireHomeTopHeader, profileCard, wireProfileCards, seeAllCard } from '../components.js';
 import { MUSIC_HUB_PROFILES, TIKTOKER_PROFILES, BOOKING_PROFILES, simulateTikTokFollowers, sortSponsoredFirst } from '../data.js';
 import { esc, toast } from '../utils.js';
-import { state, isFavorite, toggleFavorite, openChatWith, trackProfileView } from '../state.js';
+import { state, isFavorite, toggleFavorite, openChatWith, trackProfileView, canCallDirectly } from '../state.js';
 import { openCheckout } from '../checkout.js';
 import { openCall } from '../callSimulator.js';
 
@@ -35,7 +35,7 @@ export function renderHome(container) {
             ${HUB_CAT_IDS.map((id) => `<button class="chip ${hubCat === id ? 'active' : ''}" data-hub="${id}">${esc(roleLabel(id))}</button>`).join('')}
           </div>
           <div class="h-scroll" id="hub-scroll">
-            ${selfMusicHubCard(hubCat) + hubShown.map((p) => profileCard(p, hubCat)).join('') + (hubList.length > CAP ? seeAllCard() : '')}
+            ${selfMusicHubCard(hubCat) + hubShown.map((p) => profileCard(p, hubCat)).join('') + (hubList.length > 0 ? seeAllCard() : '')}
           </div>
         </div>
 
@@ -50,7 +50,7 @@ export function renderHome(container) {
           <div class="h-scroll" id="promo-scroll">
             ${promoTab === 'tiktoker' ? selfTiktokerCard() : selfBookingCard()}
             ${promoShown.map(promoTab === 'tiktoker' ? tiktokerCard : bookingCard).join('')}
-            ${promoFull.length > CAP ? seeAllCard() : ''}
+            ${promoFull.length > 0 ? seeAllCard() : ''}
           </div>
         </div>
 
@@ -227,7 +227,8 @@ export function renderHome(container) {
         if (!item) return;
         trackProfileView(item.id);
         if (action === 'msg') navigate('/chat/' + openChatWith(item, category));
-        else openCall(item, action === 'video');
+        else if (canCallDirectly(item, category)) openCall(item, action === 'video');
+        else { toast(t('call_locked_toast')); navigate('/chat/' + openChatWith(item, category)); }
       });
     });
     if (category === 'tiktoker') {

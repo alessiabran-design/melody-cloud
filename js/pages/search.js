@@ -3,7 +3,7 @@ import { setNavVisible, pageHeader, wirePageHeader } from '../components.js';
 import { SERVICE_PROFILES, sortSponsoredFirst } from '../data.js';
 import { openCheckout } from '../checkout.js';
 import { esc, openSheet, closeSheet, toast } from '../utils.js';
-import { isFavorite, toggleFavorite, openChatWith, trackProfileView } from '../state.js';
+import { isFavorite, toggleFavorite, openChatWith, trackProfileView, canCallDirectly } from '../state.js';
 import { t, roleLabel, LOCALES } from '../i18n.js';
 import { state } from '../state.js';
 import { navigate } from '../router.js';
@@ -99,7 +99,11 @@ export function renderSearch(container) {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
           const p = SERVICE_PROFILES.find((x) => x.id === btn.dataset.callService);
-          if (p) { trackProfileView(p.id); openCall(p, false); }
+          if (!p) return;
+          trackProfileView(p.id);
+          const cat = btn.closest('.result-row')?.dataset.cat || 'servizi';
+          if (canCallDirectly(p, cat)) openCall(p, false);
+          else { toast(t('call_locked_toast')); navigate('/chat/' + openChatWith(p, cat)); }
         });
       });
       container.querySelectorAll('[data-msg-service]').forEach((btn) => {
@@ -277,43 +281,68 @@ export function renderSearch(container) {
   }
 
   function openWhereSheet() {
-    const html = `
-      <div class="sheet-handle"></div>
-      <div class="sheet-head"><h2>${t('search_where_label')}</h2><button class="btn-icon" id="sheet-close">${icon('x', 16)}</button></div>
-      <div class="field"><input class="input" id="city-input" placeholder="${esc(t('search_where_search_placeholder'))}" /></div>
-      <div class="where-list">
+    // Free-text input (a street address, a neighbourhood, anything the user
+    // types) is always usable via the "Cerca <testo>" row — the fixed city
+    // list below is just a set of quick shortcuts, filtered live as you
+    // type, never the only option.
+    function resultsHtml(filterText) {
+      const needle = filterText.trim().toLowerCase();
+      const matches = needle ? CITIES.filter((c) => c.toLowerCase().includes(needle)) : CITIES;
+      return `
         <div class="where-item" id="use-location">
           <div class="ic">${icon('mapPin', 17)}</div>
           <span>${t('search_use_location')}</span>
         </div>
-        ${CITIES.map((c) => `
+        ${filterText.trim() ? `
+        <div class="where-item" id="use-freetext" data-value="${esc(filterText.trim())}">
+          <div class="ic">${icon('search', 17)}</div>
+          <span>${t('search_use_freetext', { query: esc(filterText.trim()) })}</span>
+        </div>` : ''}
+        ${matches.map((c) => `
           <div class="where-item" data-city="${esc(c)}">
             <div class="ic">${icon('building', 17)}</div>
             <span>${esc(c)}, Italia</span>
           </div>`).join('')}
-      </div>
+        ${!matches.length && !filterText.trim() ? `<p class="muted small container-pad">${t('search_where_no_match')}</p>` : ''}
+      `;
+    }
+
+    const html = `
+      <div class="sheet-handle"></div>
+      <div class="sheet-head"><h2>${t('search_where_label')}</h2><button class="btn-icon" id="sheet-close">${icon('x', 16)}</button></div>
+      <div class="field"><input class="input" id="city-input" placeholder="${esc(t('search_where_search_placeholder'))}" /></div>
+      <div class="where-list" id="where-results">${resultsHtml('')}</div>
     `;
     const overlay = openSheet(html);
-    overlay.querySelector('#sheet-close').addEventListener('click', closeSheet);
-    overlay.querySelectorAll('[data-city]').forEach((el) => el.addEventListener('click', () => {
-      query.place = el.dataset.city + ', Italia';
+    const resultsEl = overlay.querySelector('#where-results');
+
+    function selectPlace(place) {
+      query.place = place;
       closeSheet();
       paint();
-    }));
-    overlay.querySelector('#use-location').addEventListener('click', () => {
-      if (!navigator.geolocation) { toast(t('toast_geo_unavailable')); return; }
-      toast(t('toast_locating'));
-      navigator.geolocation.getCurrentPosition(
-        () => { query.place = t('search_use_location'); closeSheet(); paint(); toast(t('toast_location_set')); },
-        () => { toast(t('toast_location_denied')); }
-      );
+    }
+
+    function wireResults() {
+      resultsEl.querySelectorAll('[data-city]').forEach((el) => el.addEventListener('click', () => selectPlace(el.dataset.city + ', Italia')));
+      resultsEl.querySelector('#use-freetext')?.addEventListener('click', (e) => selectPlace(e.currentTarget.dataset.value));
+      resultsEl.querySelector('#use-location').addEventListener('click', () => {
+        if (!navigator.geolocation) { toast(t('toast_geo_unavailable')); return; }
+        toast(t('toast_locating'));
+        navigator.geolocation.getCurrentPosition(
+          () => { toast(t('toast_location_set')); selectPlace(t('search_use_location')); },
+          () => { toast(t('toast_location_denied')); }
+        );
+      });
+    }
+
+    overlay.querySelector('#sheet-close').addEventListener('click', closeSheet);
+    wireResults();
+    overlay.querySelector('#city-input').addEventListener('input', (e) => {
+      resultsEl.innerHTML = resultsHtml(e.target.value);
+      wireResults();
     });
     overlay.querySelector('#city-input').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && e.target.value.trim()) {
-        query.place = e.target.value.trim();
-        closeSheet();
-        paint();
-      }
+      if (e.key === 'Enter' && e.target.value.trim()) selectPlace(e.target.value.trim());
     });
   }
 

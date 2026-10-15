@@ -10,6 +10,16 @@ import { openCheckout } from '../checkout.js';
 const LOCATION_ROLES = ['studio', 'fotografo', 'fonico', 'videomaker'];
 const GALLERY_ROLES = ['fotografo', 'videomaker'];
 
+// People commonly type/paste "tiktok.com/@nome" or just "@nome" — fine for a
+// human, but an <input type="url"> rejects it without a protocol. Add one
+// instead of forcing the user to know/retype the exact syntax.
+function normalizeTiktokUrl(raw) {
+  const v = raw.trim();
+  if (!v) return '';
+  if (/^https?:\/\//i.test(v)) return v;
+  return 'https://' + v.replace(/^\/+/, '');
+}
+
 function verificationBadgeHtml(p) {
   if (p.role !== 'artista') return '';
   if (p.verificationStatus === 'verified') return `<span class="clause-badge" style="position:static; background:var(--mc-600); color:#fff;">${icon('checkCircle', 12)} ${t('verify_verified_badge')}</span>`;
@@ -350,11 +360,17 @@ export function renderProfileEdit(container) {
       }));
     }
     const tiktokUrlEl = container.querySelector('#f-tiktok-url');
-    if (tiktokUrlEl) tiktokUrlEl.addEventListener('input', () => {
-      const url = tiktokUrlEl.value.trim();
-      const preview = container.querySelector('#tiktok-followers-preview');
-      preview.innerHTML = `${icon('tiktok', 12)} ` + (url ? t('pe_tiktok_followers_hint', { n: simulateTikTokFollowers(url) }) : t('pe_tiktok_followers_none'));
-    });
+    if (tiktokUrlEl) {
+      tiktokUrlEl.addEventListener('input', () => {
+        const url = tiktokUrlEl.value.trim();
+        const preview = container.querySelector('#tiktok-followers-preview');
+        preview.innerHTML = `${icon('tiktok', 12)} ` + (url ? t('pe_tiktok_followers_hint', { n: simulateTikTokFollowers(url) }) : t('pe_tiktok_followers_none'));
+      });
+      // People commonly type/paste "tiktok.com/@nome" or just "@nome" without
+      // a protocol — type="url" then marks the field invalid on blur, which
+      // looked like the form refused to save. Auto-complete it instead.
+      tiktokUrlEl.addEventListener('blur', () => { tiktokUrlEl.value = normalizeTiktokUrl(tiktokUrlEl.value); });
+    }
     const geoBtn = container.querySelector('#use-geo');
     if (geoBtn) geoBtn.addEventListener('click', () => {
       if (!navigator.geolocation) { toast(t('toast_geo_unavailable')); return; }
@@ -382,7 +398,7 @@ export function renderProfileEdit(container) {
     const priceEl = container.querySelector('#f-tiktok-price');
     if (priceEl) draft.tiktokPrice = priceEl.value === '' ? null : Number(priceEl.value);
     const tiktokUrlEl2 = container.querySelector('#f-tiktok-url');
-    if (tiktokUrlEl2) draft.tiktokUrl = tiktokUrlEl2.value.trim();
+    if (tiktokUrlEl2) draft.tiktokUrl = normalizeTiktokUrl(tiktokUrlEl2.value);
     const regionEl = container.querySelector('#f-booking-region');
     if (regionEl) draft.bookingRegion = regionEl.value.trim();
     const venuesEl = container.querySelector('#f-booking-venues');

@@ -4,7 +4,7 @@ import { MUSIC_HUB_PROFILES, TIKTOKER_PROFILES, BOOKING_PROFILES, sortSponsoredF
 import { esc, toast } from '../utils.js';
 import { t, roleLabel } from '../i18n.js';
 import { navigate } from '../router.js';
-import { state, isFavorite, toggleFavorite, openChatWith, trackProfileView } from '../state.js';
+import { state, isFavorite, toggleFavorite, openChatWith, trackProfileView, canCallDirectly } from '../state.js';
 import { openCall } from '../callSimulator.js';
 import { openCheckout } from '../checkout.js';
 
@@ -182,7 +182,8 @@ export function renderSeeAllPromo(container, { tab }) {
         trackProfileView(item.id);
         const cat = isTiktoker ? 'tiktoker' : 'booking';
         if (action === 'msg') navigate('/chat/' + openChatWith(item, cat));
-        else openCall(item, action === 'video');
+        else if (canCallDirectly(item, cat)) openCall(item, action === 'video');
+        else { toast(t('call_locked_toast')); navigate('/chat/' + openChatWith(item, cat)); }
       });
     });
     grid.querySelectorAll('[data-pay]').forEach((btn) => {

@@ -1,7 +1,7 @@
 import { icon } from '../icons.js';
 import { setNavVisible, openReportBlockSheet } from '../components.js';
 import { MUSIC_HUB_PROFILES, TIKTOKER_PROFILES, SERVICE_PROFILES, ROLES, followerTierOf } from '../data.js';
-import { isFavorite, toggleFavorite, openChatWith, trackProfileView, isBlocked, getDisplayRating, getReviews } from '../state.js';
+import { isFavorite, toggleFavorite, openChatWith, trackProfileView, isBlocked, getDisplayRating, getReviews, canCallDirectly } from '../state.js';
 import { esc, toast } from '../utils.js';
 import { navigate } from '../router.js';
 import { t, roleLabel } from '../i18n.js';
@@ -123,8 +123,10 @@ export function renderMusicHubProfile(container, { cat, id }) {
     container.querySelectorAll('[data-qa]').forEach((btn) => {
       btn.addEventListener('click', () => {
         const action = btn.dataset.qa;
+        if (blocked) { toast(t('blocked_banner_text')); return; }
         if (action === 'msg') navigate('/chat/' + openChatWith(p, cat));
-        else openCall(p, action === 'video');
+        else if (canCallDirectly(p, cat)) openCall(p, action === 'video');
+        else { toast(t('call_locked_toast')); navigate('/chat/' + openChatWith(p, cat)); }
       });
     });
   }
@@ -194,12 +196,15 @@ export function renderTiktokerProfile(container, { id }) {
     container.querySelectorAll('[data-qa]').forEach((btn) => {
       btn.addEventListener('click', () => {
         const action = btn.dataset.qa;
+        if (blocked) { toast(t('blocked_banner_text')); return; }
         trackProfileView(p.id);
         if (action === 'msg') navigate('/chat/' + openChatWith(p, 'tiktoker'));
-        else openCall(p, action === 'video');
+        else if (canCallDirectly(p, 'tiktoker')) openCall(p, action === 'video');
+        else { toast(t('call_locked_toast')); navigate('/chat/' + openChatWith(p, 'tiktoker')); }
       });
     });
     container.querySelector('#pd-pay-btn').addEventListener('click', () => {
+      if (blocked) { toast(t('blocked_banner_text')); return; }
       trackProfileView(p.id);
       openCheckout({ title: t('pay_book_btn'), amount: p.price, description: p.name, escrow: true, type: 'service', subjectId: p.id, onSuccess: () => {} });
     });
@@ -290,12 +295,15 @@ export function renderServiceProfile(container, { id }) {
     container.querySelectorAll('[data-qa]').forEach((btn) => {
       btn.addEventListener('click', () => {
         const action = btn.dataset.qa;
+        if (blocked) { toast(t('blocked_banner_text')); return; }
         trackProfileView(p.id);
         if (action === 'msg') navigate('/chat/' + openChatWith(p, cat));
-        else openCall(p, action === 'video');
+        else if (canCallDirectly(p, cat)) openCall(p, action === 'video');
+        else { toast(t('call_locked_toast')); navigate('/chat/' + openChatWith(p, cat)); }
       });
     });
     container.querySelector('#pd-pay-btn').addEventListener('click', () => {
+      if (blocked) { toast(t('blocked_banner_text')); return; }
       trackProfileView(p.id);
       openCheckout({
         title: isStudio ? t('pd_quote_btn') : t('pay_book_btn'),

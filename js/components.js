@@ -1,5 +1,5 @@
 import { icon } from './icons.js';
-import { state, isFavorite, toggleFavorite, openChatWith, trackProfileView, isBlocked, blockContact, unblockContact, reportUser } from './state.js';
+import { state, isFavorite, toggleFavorite, openChatWith, trackProfileView, isBlocked, blockContact, unblockContact, reportUser, canCallDirectly } from './state.js';
 import { navigate } from './router.js';
 import { t, LANGUAGES } from './i18n.js';
 import { esc, openSheet, closeSheet, toast } from './utils.js';
@@ -193,7 +193,8 @@ export function wireProfileCards(container, category, items) {
       if (!item) return;
       trackProfileView(item.id);
       if (action === 'msg') navigate('/chat/' + openChatWith(item, category));
-      else openCall(item, action === 'video');
+      else if (canCallDirectly(item, category)) openCall(item, action === 'video');
+      else { toast(t('call_locked_toast')); navigate('/chat/' + openChatWith(item, category)); }
     });
   });
   container.querySelectorAll('.profile-card').forEach((card) => {

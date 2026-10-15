@@ -181,6 +181,10 @@ export function renderChatDetail(container, { id }) {
   if (chat.unread && !pending) update((s) => { s.chats[id].unread = 0; });
   const isGhost = !!state.ghostContacts[id];
   const locked = !pending && !blocked && !!chat.premium && !chat.unlocked;
+  // Calls are blocked by the exact same conditions as the text composer —
+  // a fan can't dodge the pay-to-message / accept-request / block rules
+  // just by tapping the call icons instead of typing.
+  const canCall = !pending && !locked && !blocked;
 
   container.innerHTML = `
     <div class="screen no-nav-pad" style="display:flex; flex-direction:column; min-height:100vh;">
@@ -191,8 +195,8 @@ export function renderChatDetail(container, { id }) {
           <div class="n">${esc(chat.name)}</div>
           <div class="s">${isGhost ? '👻 ' + t('chat_incognito') : `<span class="status-dot ${chat.online ? 'online' : 'offline'}"></span>${chat.online ? t('chat_online_now') : t('chat_last_seen')}`}</div>
         </div>
-        <button class="icon-btn" id="ctrl-call" style="margin-right:6px;">${icon('phone', 17)}</button>
-        <button class="icon-btn" id="ctrl-video" style="margin-right:6px;">${icon('video', 17)}</button>
+        <button class="icon-btn" id="ctrl-call" style="margin-right:6px; ${canCall ? '' : 'opacity:.4;'}">${icon('phone', 17)}</button>
+        <button class="icon-btn" id="ctrl-video" style="margin-right:6px; ${canCall ? '' : 'opacity:.4;'}">${icon('video', 17)}</button>
         <button class="icon-btn" id="ghost-chip" style="margin-right:6px; ${state.ghostMode ? 'background:rgba(255,255,255,0.3);' : ''}">${icon('ghost', 17)}</button>
         <button class="icon-btn" id="more-chip">${icon('info', 17)}</button>
       </div>
@@ -244,8 +248,14 @@ export function renderChatDetail(container, { id }) {
   container.querySelector('#ghost-chip').addEventListener('click', () => {
     toast(state.ghostMode ? t('toast_ghost_active_info') : t('toast_ghost_hint'));
   });
-  container.querySelector('#ctrl-call').addEventListener('click', () => openCall(chat, false));
-  container.querySelector('#ctrl-video').addEventListener('click', () => openCall(chat, true));
+  container.querySelector('#ctrl-call').addEventListener('click', () => {
+    if (canCall) openCall(chat, false);
+    else toast(blocked ? t('blocked_banner_text') : pending ? t('chat_request_banner') : t('chat_paywall_desc', { name: esc(chat.name) }));
+  });
+  container.querySelector('#ctrl-video').addEventListener('click', () => {
+    if (canCall) openCall(chat, true);
+    else toast(blocked ? t('blocked_banner_text') : pending ? t('chat_request_banner') : t('chat_paywall_desc', { name: esc(chat.name) }));
+  });
   container.querySelector('#more-chip').addEventListener('click', () => openReportBlockSheet({ id: blockId, name: chat.name }));
 
   const list = container.querySelector('#msg-list');

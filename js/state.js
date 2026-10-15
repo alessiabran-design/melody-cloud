@@ -134,6 +134,18 @@ export function isPremiumContact(contact) {
 export const MESSAGE_UNLOCK_FEE = 1.99;
 export const MESSAGE_UNLOCK_DEADLINE_DAYS = 7;
 
+// The pay-to-message rule has to cover calls too, not just text — a fan
+// calling or video-calling a high-tier professional directly would bypass
+// the whole protection otherwise. A call is allowed straight away only for
+// non-premium contacts, or once the conversation with that contact has
+// already been unlocked (same chat id scheme as openChatWith).
+export function canCallDirectly(contact, category) {
+  if (!isPremiumContact(contact)) return true;
+  const id = 'dm_' + category + '_' + contact.id;
+  const chat = state.chats[id];
+  return !!(chat && chat.unlocked);
+}
+
 // Reviews the current user has left for a professional, kept separately from
 // each mock profile's static baked-in rating/review-count so the two can be
 // blended at display time without mutating the read-only mock data arrays.

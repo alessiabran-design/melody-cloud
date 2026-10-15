@@ -1,0 +1,53 @@
+.container-pad { padding-left: 18px; padding-right: 18px; }
+.stack-8 > * + * { margin-top: 8px; }
+.stack-12 > * + * { margin-top: 12px; }
+.stack-16 > * + * { margin-top: 16px; }
+.text-center { text-align: center; }
+.mt-0 { margin-top: 0; }
+.mb-0 { margin-bottom: 0; }
+.muted { color: var(--text-3); font-size: 13px; }
+.small { font-size: 12px; }
+
+/* Date range picker (native inputs styled as one unified control) */
+.date-range-box {
+  display: flex; align-items: stretch; gap: 4px; margin: 4px 18px 0;
+  background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 4px;
+}
+.date-range-field { flex: 1; padding: 10px 12px; min-width: 0; color-scheme: light; }
+.date-range-field label {
+  display: block; font-size: 11px; font-weight: 700; color: var(--text-3);
+  text-transform: uppercase; letter-spacing: .03em; margin-bottom: 4px;
+}
+.date-range-field input[type="date"],
+.date-range-field input[type="number"] {
+  border: none; background: none; font-size: 14.5px; font-weight: 600; color: var(--text-1);
+  width: 100%; padding: 0; font-family: inherit; accent-color: var(--mc-600);
+}
+.date-range-field input[type="date"]:focus,
+.date-range-field input[type="number"]:focus { outline: none; }
+.date-range-divider { display: flex; align-items: center; color: var(--text-3); flex-shrink: 0; }
+
+.service-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 8px 18px 4px; }
+.service-opt { border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 14px 10px; text-align: center; cursor: pointer; background: var(--surface); }
+.service-opt.selected { border-color: var(--mc-500); background: var(--mc-100); }
+.service-opt .ic { width: 34px; height: 34px; margin: 0 auto 8px; border-radius: 10px; background: var(--surface-alt); color: var(--mc-600); display: flex; align-items: center; justify-content: center; }
+.service-opt.selected .ic { background: var(--grad-brand); color: #fff; }
+.service-opt span { font-size: 12.5px; font-weight: 700; }
+
+.where-list { padding: 4px 4px; }
+.where-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: var(--radius-md); cursor: pointer; }
+.where-item:active { background: var(--surface-alt); }
+.where-item .ic { width: 36px; height: 36px; border-radius: 10px; background: var(--surface-alt); color: var(--mc-600); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+.lang-list { padding: 4px 4px; }
+.lang-item { display: flex; align-items: center; justify-content: space-between; padding: 13px 14px; border-radius: var(--radius-md); cursor: pointer; }
+.lang-item:active { background: var(--surface-alt); }
+.lang-item .l-name { display: flex; align-items: center; gap: 10px; font-size: 14.5px; font-weight: 600; }
+.lang-item .flag { font-size: 20px; }
+.lang-item .check { color: var(--mc-600); }
+
+.age-verify-box { display: flex; gap: 10px; align-items: flex-start; background: var(--mc-50); border: 1px solid var(--mc-200); border-radius: var(--radius-md); padding: 12px 14px; margin: 0 18px 16px; }
+.age-verify-box svg { color: var(--mc-600); flex-shrink: 0; margin-top: 2px; }
+.age-verify-box p { font-size: 12px; color: var(--text-2); line-height: 1.5; }
+
+.geo-note { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--mc-600); background: var(--mc-50); padding: 10px 12px; border-radius: var(--radius-md); margin-top: 6px; }

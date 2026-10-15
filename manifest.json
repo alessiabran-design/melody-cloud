@@ -1,0 +1,15 @@
+{
+  "name": "Melody Cloud",
+  "short_name": "Melody Cloud",
+  "description": "La piattaforma che connette artisti, professionisti e creator della musica.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#180a2e",
+  "theme_color": "#2d1155",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

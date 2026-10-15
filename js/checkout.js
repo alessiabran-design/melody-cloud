@@ -113,9 +113,8 @@ export function openCheckout({ title, amount, description, escrow = false, type 
       </div>` : ''}
 
       ${needsAuth && method === 'paypal' ? `
-      <div class="card-form">
-        <div class="field"><label>${t('checkout_paypal_email')}</label><input class="input" id="pp-email" type="email" placeholder="mario.rossi@email.com" /></div>
-        <div class="field mb-0"><label>${t('checkout_paypal_password')}</label><input class="input" id="pp-password" type="password" placeholder="••••••••" /></div>
+      <div class="checkout-summary" style="text-align:center;">
+        <p class="muted small" style="line-height:1.5;">${icon('shield', 13)} ${t('checkout_paypal_redirect_note')}</p>
       </div>` : ''}
 
       <div class="container-pad" style="padding-top:14px;">
@@ -147,12 +146,11 @@ export function openCheckout({ title, amount, description, escrow = false, type 
     body.querySelector('#checkout-auth')?.addEventListener('click', onAuth);
   }
 
+  // Apple/Google/PayPal never collect credentials inside this app — each
+  // hands off to the real provider's own authenticated surface (device
+  // biometrics, the browser's own password manager, or PayPal's own login).
+  // This step only simulates that hand-off completing successfully.
   function onAuth() {
-    if (method === 'paypal') {
-      const email = overlay.querySelector('#pp-email')?.value.trim() || '';
-      const pw = overlay.querySelector('#pp-password')?.value || '';
-      if (!email.includes('@') || pw.length < 4) { toast(t('checkout_invalid_card')); return; }
-    }
     authStep = true;
     onPay();
   }

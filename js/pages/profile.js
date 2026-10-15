@@ -320,6 +320,7 @@ export function renderProfileEdit(container) {
           // badge lifecycle (pending -> verified) can be seen end to end.
           setTimeout(() => {
             update((s) => { if (s.profile.verificationStatus === 'pending') s.profile.verificationStatus = 'verified'; });
+            toast(t('verify_approved_toast'));
           }, 12000);
           paint();
         });

@@ -173,6 +173,7 @@ export function renderLogin(container) {
       // purely to let the badge lifecycle be seen/tested end to end.
       setTimeout(() => {
         update((s) => { if (s.profile.verificationStatus === 'pending') s.profile.verificationStatus = 'verified'; });
+        toast(t('verify_approved_toast'));
       }, 12000);
     }
     setNavVisible(true);

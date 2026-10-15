@@ -51,6 +51,7 @@ const dict = {
     verify_file_required_msg: 'Seleziona un file da caricare.',
     verify_pending_badge: 'In attesa di verifica', verify_verified_badge: 'Account verificato',
     verify_submitted_toast: 'Documento inviato. Il tuo account è in attesa di verifica.',
+    verify_approved_toast: 'Il tuo profilo Artista è stato verificato! Ora mostri la spunta di account verificato.',
 
     legal_back: 'Indietro', legal_last_updated: 'Ultimo aggiornamento: {date}',
     legal_demo_notice: 'Documento dimostrativo a scopo illustrativo — non costituisce consulenza legale né una policy verificata da un professionista.',
@@ -230,8 +231,8 @@ const dict = {
     call_mute: 'Muto', call_speaker: 'Vivavoce', call_keypad: 'Tastierino', call_facetime: 'FaceTime',
     call_hide_keypad: 'Nascondi tastierino', call_end: 'Termina', call_switch_audio: 'Passa ad audio', call_camera: 'Fotocamera',
 
-    checkout_paypal_email: 'Email PayPal', checkout_paypal_password: 'Password',
-    checkout_paypal_login_btn: 'Accedi e paga',
+    checkout_paypal_redirect_note: 'Verrai reindirizzata al sito/app ufficiale di PayPal per accedere in sicurezza — non inserisci mai le tue credenziali PayPal qui dentro.',
+    checkout_paypal_login_btn: 'Continua su PayPal',
     checkout_confirm_biometric: 'Conferma con Face ID / Impronta',
     checkout_confirm_google: 'Conferma con Google Password Manager',
 
@@ -293,6 +294,7 @@ const dict = {
     verify_file_required_msg: 'Select a file to upload.',
     verify_pending_badge: 'Pending verification', verify_verified_badge: 'Verified account',
     verify_submitted_toast: 'Document submitted. Your account is pending verification.',
+    verify_approved_toast: 'Your Artist profile has been verified! You now show the verified account badge.',
 
     legal_back: 'Back', legal_last_updated: 'Last updated: {date}',
     legal_demo_notice: 'Demo document for illustrative purposes — this is not legal advice nor a policy reviewed by a professional.',
@@ -472,8 +474,8 @@ const dict = {
     call_mute: 'Mute', call_speaker: 'Speaker', call_keypad: 'Keypad', call_facetime: 'FaceTime',
     call_hide_keypad: 'Hide keypad', call_end: 'End', call_switch_audio: 'Switch to audio', call_camera: 'Camera',
 
-    checkout_paypal_email: 'PayPal email', checkout_paypal_password: 'Password',
-    checkout_paypal_login_btn: 'Log in & pay',
+    checkout_paypal_redirect_note: "You'll be redirected to PayPal's own official site/app to log in securely — you never enter your PayPal credentials inside this app.",
+    checkout_paypal_login_btn: 'Continue to PayPal',
     checkout_confirm_biometric: 'Confirm with Face ID / Fingerprint',
     checkout_confirm_google: 'Confirm with Google Password Manager',
 
@@ -535,6 +537,7 @@ const dict = {
     verify_file_required_msg: 'Selecciona un archivo para subir.',
     verify_pending_badge: 'Verificación pendiente', verify_verified_badge: 'Cuenta verificada',
     verify_submitted_toast: 'Documento enviado. Tu cuenta está pendiente de verificación.',
+    verify_approved_toast: '¡Tu perfil de Artista ha sido verificado! Ahora muestras la insignia de cuenta verificada.',
 
     legal_back: 'Atrás', legal_last_updated: 'Última actualización: {date}',
     legal_demo_notice: 'Documento de demostración con fines ilustrativos — no constituye asesoramiento legal ni una política revisada por un profesional.',
@@ -714,8 +717,8 @@ const dict = {
     call_mute: 'Silenciar', call_speaker: 'Altavoz', call_keypad: 'Teclado', call_facetime: 'FaceTime',
     call_hide_keypad: 'Ocultar teclado', call_end: 'Finalizar', call_switch_audio: 'Cambiar a audio', call_camera: 'Cámara',
 
-    checkout_paypal_email: 'Correo de PayPal', checkout_paypal_password: 'Contraseña',
-    checkout_paypal_login_btn: 'Iniciar sesión y pagar',
+    checkout_paypal_redirect_note: 'Serás redirigida al sitio/app oficial de PayPal para iniciar sesión de forma segura — nunca introduces tus credenciales de PayPal dentro de esta app.',
+    checkout_paypal_login_btn: 'Continuar en PayPal',
     checkout_confirm_biometric: 'Confirmar con Face ID / Huella',
     checkout_confirm_google: 'Confirmar con el Gestor de contraseñas de Google',
 
@@ -777,6 +780,7 @@ const dict = {
     verify_file_required_msg: 'Sélectionnez un fichier à télécharger.',
     verify_pending_badge: 'Vérification en attente', verify_verified_badge: 'Compte vérifié',
     verify_submitted_toast: 'Document envoyé. Votre compte est en attente de vérification.',
+    verify_approved_toast: 'Votre profil Artiste a été vérifié ! Vous affichez désormais le badge de compte vérifié.',
 
     legal_back: 'Retour', legal_last_updated: 'Dernière mise à jour : {date}',
     legal_demo_notice: "Document de démonstration à titre illustratif — ceci ne constitue pas un conseil juridique ni une politique validée par un professionnel.",
@@ -956,8 +960,8 @@ const dict = {
     call_mute: 'Muet', call_speaker: 'Haut-parleur', call_keypad: 'Clavier', call_facetime: 'FaceTime',
     call_hide_keypad: 'Masquer le clavier', call_end: 'Terminer', call_switch_audio: 'Passer en audio', call_camera: 'Caméra',
 
-    checkout_paypal_email: 'Email PayPal', checkout_paypal_password: 'Mot de passe',
-    checkout_paypal_login_btn: 'Se connecter et payer',
+    checkout_paypal_redirect_note: 'Vous serez redirigée vers le site/l\'app officiel de PayPal pour vous connecter en toute sécurité — vous ne saisissez jamais vos identifiants PayPal dans cette application.',
+    checkout_paypal_login_btn: 'Continuer vers PayPal',
     checkout_confirm_biometric: 'Confirmer avec Face ID / Empreinte',
     checkout_confirm_google: 'Confirmer avec le Gestionnaire de mots de passe Google',
 
@@ -1019,6 +1023,7 @@ const dict = {
     verify_file_required_msg: 'Wähle eine Datei zum Hochladen aus.',
     verify_pending_badge: 'Verifizierung ausstehend', verify_verified_badge: 'Verifiziertes Konto',
     verify_submitted_toast: 'Dokument gesendet. Dein Konto wartet auf Verifizierung.',
+    verify_approved_toast: 'Dein Künstlerprofil wurde verifiziert! Du zeigst jetzt das Verifizierungs-Abzeichen.',
 
     legal_back: 'Zurück', legal_last_updated: 'Zuletzt aktualisiert: {date}',
     legal_demo_notice: 'Demo-Dokument zu Anschauungszwecken — dies stellt keine Rechtsberatung und keine von einem Fachmann geprüfte Richtlinie dar.',
@@ -1198,8 +1203,8 @@ const dict = {
     call_mute: 'Stumm', call_speaker: 'Lautsprecher', call_keypad: 'Tastenfeld', call_facetime: 'FaceTime',
     call_hide_keypad: 'Tastenfeld ausblenden', call_end: 'Beenden', call_switch_audio: 'Zu Audio wechseln', call_camera: 'Kamera',
 
-    checkout_paypal_email: 'PayPal-E-Mail', checkout_paypal_password: 'Passwort',
-    checkout_paypal_login_btn: 'Anmelden & bezahlen',
+    checkout_paypal_redirect_note: 'Du wirst zur offiziellen PayPal-Website/App weitergeleitet, um dich sicher anzumelden — du gibst deine PayPal-Zugangsdaten niemals innerhalb dieser App ein.',
+    checkout_paypal_login_btn: 'Weiter zu PayPal',
     checkout_confirm_biometric: 'Mit Face ID / Fingerabdruck bestätigen',
     checkout_confirm_google: 'Mit Google Passwortmanager bestätigen',
 

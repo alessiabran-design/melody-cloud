@@ -21,8 +21,27 @@ export function renderLogin(container) {
   let mode = 'login';
   let signupRole = '';
   let idDocName = '';
+  // The form re-renders from scratch (innerHTML) whenever the role changes
+  // or a document is picked, which would otherwise wipe whatever the user
+  // already typed — these keep every field's value across those re-renders.
+  let draft = { fullname: '', email: '', password: '', birthdate: '', terms: false, privacy: false };
+
+  function captureDraft() {
+    const form = container.querySelector('#auth-form');
+    if (!form) return;
+    const fd = new FormData(form);
+    draft = {
+      fullname: fd.get('fullname') || '',
+      email: fd.get('email') || '',
+      password: fd.get('password') || '',
+      birthdate: fd.get('birthdate') || '',
+      terms: !!fd.get('terms'),
+      privacy: !!fd.get('privacy'),
+    };
+  }
 
   function paint() {
+    captureDraft();
     container.innerHTML = `
       <div class="screen no-nav-pad">
         <div class="login-hero">
@@ -38,26 +57,26 @@ export function renderLogin(container) {
           ${mode === 'register' ? `
           <div class="field">
             <label>${t('login_fullname_label')}</label>
-            <input class="input" name="fullname" placeholder="${esc(t('login_fullname_placeholder'))}" required />
+            <input class="input" name="fullname" value="${esc(draft.fullname)}" placeholder="${esc(t('login_fullname_placeholder'))}" required />
           </div>` : ''}
           <div class="field">
             <label>${t('email')}</label>
             <div class="input-with-icon">
               <span class="icon-slot">${icon('user', 16)}</span>
-              <input class="input" type="email" name="email" placeholder="nome@email.com" required />
+              <input class="input" type="email" name="email" value="${esc(draft.email)}" placeholder="nome@email.com" required />
             </div>
           </div>
           <div class="field">
             <label>${t('password')}</label>
             <div class="input-with-icon">
               <span class="icon-slot">${icon('lock', 16)}</span>
-              <input class="input" type="password" name="password" placeholder="••••••••" minlength="6" required />
+              <input class="input" type="password" name="password" value="${esc(draft.password)}" placeholder="••••••••" minlength="6" required />
             </div>
           </div>
           ${mode === 'register' ? `
           <div class="field">
             <label>${t('signup_birthdate_label')}</label>
-            <input class="input" type="date" name="birthdate" id="f-birthdate" max="${new Date().toISOString().slice(0, 10)}" required />
+            <input class="input" type="date" name="birthdate" id="f-birthdate" value="${esc(draft.birthdate)}" max="${new Date().toISOString().slice(0, 10)}" required />
           </div>
           <div class="field">
             <label>${t('signup_role_label')}</label>
@@ -78,11 +97,11 @@ export function renderLogin(container) {
           </div>
           ` : ''}
           <div class="checkbox-row">
-            <input type="checkbox" id="terms-check" name="terms" />
+            <input type="checkbox" id="terms-check" name="terms" ${draft.terms ? 'checked' : ''} />
             <label for="terms-check">${t('signup_accept_prefix')} <a href="#/legal/terms" id="terms-link">${t('signup_terms_link_text')}</a></label>
           </div>
           <div class="checkbox-row">
-            <input type="checkbox" id="privacy-check" name="privacy" />
+            <input type="checkbox" id="privacy-check" name="privacy" ${draft.privacy ? 'checked' : ''} />
             <label for="privacy-check">${t('signup_privacy_prefix')} <a href="#/legal/privacy" id="privacy-link">${t('signup_privacy_link_text')}</a></label>
           </div>
           <div style="height:14px"></div>` : ''}
